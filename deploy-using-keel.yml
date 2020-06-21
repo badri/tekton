@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-using-kubectl
+spec:
+  workspaces:
+    - name: git-source
+      description: The git repo
+  params:
+    - name: pathToYamlFile
+      description: The path to the yaml file to deploy within the git source
+    - name: imageUrl
+      description: Image name including repository
+    - name: imageTag
+      description: Image tag
+      default: "latest"
+    - name: imageDigest
+      description: Digest of the image to be used.
+  steps:
+    - name: trigger-keel
+      image: alpine/httpie:2.2.0
+      script: |
+        http --ignore-stdin --check-status --verbose POST http://139.59.90.206:30868/v1/webhooks/native name="$(params.imageUrl)" tag="$(params.imageTag)"
