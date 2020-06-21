@@ -19,6 +19,8 @@ spec:
       description: The path to the yaml file to deploy within the git source
     - name: imageUrl
       description: Image name including repository
+    - name: deployImageUrl
+      description: Deploy image name including repository
     - name: imageTag
       description: Image tag
       default: "latest"
@@ -61,7 +63,7 @@ spec:
         - name: pathToYamlFile
           value: $(params.pathToYamlFile)
         - name: imageUrl
-          value: $(params.imageUrl)
+          value: $(params.deployImageUrl)
         - name: imageTag
           value: $(params.imageTag)
         - name: imageDigest
