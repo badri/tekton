@@ -6,6 +6,8 @@ spec:
   workspaces:
     - name: git-source
       description: The git repo
+    - name: composer-cache
+      description: The composer cache
   params:
     - name: gitUrl
       description: Git repository url
@@ -14,7 +16,7 @@ spec:
       default: master
     - name: pathToContext
       description: The path to the build context, used by Kaniko - within the workspace
-      default: src
+      default: .
     - name: pathToYamlFile
       description: The path to the yaml file to deploy within the git source
     - name: imageUrl
@@ -48,23 +50,25 @@ spec:
       workspaces:
         - name: source
           workspace: git-source
+        - name: composer-cache
+          workspace: composer-cache
       params:
         - name: CONTEXT
           value: $(params.pathToContext)
         - name: IMAGE
           value: $(params.imageUrl):$(params.imageTag)
-    - name: deploy-to-cluster
-      taskRef:
-        name: deploy-using-kubectl
-      workspaces:
-        - name: git-source
-          workspace: git-source
-      params:
-        - name: pathToYamlFile
-          value: $(params.pathToYamlFile)
-        - name: imageUrl
-          value: $(params.deployImageUrl)
-        - name: imageTag
-          value: $(params.imageTag)
-        - name: imageDigest
-          value: $(tasks.source-to-image.results.IMAGE-DIGEST)
+    # - name: deploy-to-cluster
+    #   taskRef:
+    #     name: deploy-using-kubectl
+    #   workspaces:
+    #     - name: git-source
+    #       workspace: git-source
+    #   params:
+    #     - name: pathToYamlFile
+    #       value: $(params.pathToYamlFile)
+    #     - name: imageUrl
+    #       value: $(params.deployImageUrl)
+    #     - name: imageTag
+    #       value: $(params.imageTag)
+    #     - name: imageDigest
+    #       value: $(tasks.source-to-image.results.IMAGE-DIGEST)

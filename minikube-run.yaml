@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: drupal-pr-
+spec:
+  pipelineRef:
+    name: build-and-deploy-pipeline
+  params:
+    - name: gitUrl
+      value: https://gitlab.com/badri1/d8-composer.git
+    - name: gitRevision
+      value: master
+    - name: pathToYamlFile
+      value: "kubernetes/picalc.yaml"
+    - name: imageUrl
+      value: docker.io/shapeblock/d8-composer
+    - name: deployImageUrl
+      value: docker.io/shapeblock/d8-composer
+    - name: imageTag
+      value: "1.0"
+  serviceAccountName: pipeline-account
+  workspaces:
+    - name: git-source
+      persistentVolumeClaim:
+        claimName: picalc-source-pvc
+    - name: composer-cache
+      persistentVolumeClaim:
+        claimName: composer-cache-pvc
